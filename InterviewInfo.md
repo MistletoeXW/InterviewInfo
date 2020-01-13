@@ -8,24 +8,24 @@
 + 具有父类当中的属性和方法，子类就不会存在重复的代码，维护性也提高，代码也更加简洁，提高代码的复用性（复用性主要是可以多次使用，不用再多次写同样的代码）
 #### 继承规则
 + Java 的继承是单继承，但是可以多重继承，单继承就是一个子类只能继承一个父类，多重继承就是，例如 A 类继承 B 类，B 类继承 C 类，所以按照关系就是 C 类是 B 类的父类，B 类是 A 类的父类，这是 Java 继承区别于 C++ 继承的一个特性。
-![1.1java继承的规则](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/1.1java继承的规则.png)
+![1.1java继承的规则](picture/1.1java继承的规则.png)
 + 子类拥有父类非 private 的属性、方法
 + 类可以拥有自己的属性和方法，即子类可以对父类进行扩展
 #### 继承相关的关键字
   继承可以使用extends和implements这两个关键字来实现继承，而且所有的类都是继承于java.lang.Object，当一个类有继承的两个关键字，则默认继承Object类
 + **extends**: 在 Java 中，类的继承是单一继承，也就是说，一个子类只能拥有一个父类，所以 extends 只能继承一个类
 ```
-public class Animal { 
-    private String name;   
-    private int id; 
-    public Animal(String myName, String myid) { 
+public class Animal {
+    private String name;
+    private int id;
+    public Animal(String myName, String myid) {
         //初始化属性值
-    } 
-    public void eat() {  //吃东西方法的具体实现  } 
-    public void sleep() { //睡觉方法的具体实现  } 
-} 
+    }
+    public void eat() {  //吃东西方法的具体实现  }
+    public void sleep() { //睡觉方法的具体实现  }
+}
 
-public class Penguin  extends  Animal{ 
+public class Penguin  extends  Animal{
 }
 ```
 + **implements**: 使用implements关键字可以变相的使Java具有多继承的特性，使用范围为类继承接口的情况，可以同时继承多个接口（接口与接口之间用“，”隔开）
@@ -34,11 +34,11 @@ public interface A {
     public void eat();
     public void sleep();
 }
- 
+
 public interface B {
     public void show();
 }
- 
+
 public class C implements A,B {
 }
 ```
@@ -49,7 +49,7 @@ class Animal {
     System.out.println("animal : eat");
   }
 }
- 
+
 class Dog extends Animal {
   void eat() {
     System.out.println("dog : eat");
@@ -76,12 +76,12 @@ class SuperClass {
 // SubClass 类继承
 class SubClass extends SuperClass{
   private int n;
-  
+
   SubClass(){ // 自动调用父类的无参数构造器
     System.out.println("SubClass");
-  }  
-  
-  public SubClass(int n){ 
+  }
+
+  public SubClass(int n){
     super(300);  // 调用父类中带有参数的构造器
     System.out.println("SubClass(int n):"+n);
     this.n = n;
@@ -90,12 +90,12 @@ class SubClass extends SuperClass{
 // SubClass2 类继承
 class SubClass2 extends SuperClass{
   private int n;
-  
+
   SubClass2(){
     super(300);  // 调用父类中带有参数的构造器
     System.out.println("SubClass2");
-  }  
-  
+  }
+
   public SubClass2(int n){ // 自动调用父类的无参数构造器
     System.out.println("SubClass2(int n):"+n);
     this.n = n;
@@ -128,16 +128,16 @@ class SubClass2 extends SuperClass{
 + (1)方法重载是一个类中定义了多个方法名相同,而他们的参数的数量不同或数量相同而类型和次序不同,则称为方法的重载(Overloading)。
 + (2)方法重写是在子类存在方法与父类的方法的名字相同,而且参数的个数与类型一样,返回值也一样的方法,就称为重写(Overriding)。
 + (3)方法重载是一个类的多态性表现,而方法重写是子类与父类的一种多态性表现。
-![1.2重写和重载的区别](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/1.2重写和重载的区别.png)
+![1.2重写和重载的区别](picture/1.2重写和重载的区别.png)
 
 ### 多态
 #### 概念
 + 多态是同一个行为具有多个不同表现形式或形态的能力。多态就是同一个接口，使用不同的实例而执行不同操作，意味着不同类的对象对同一消息做出不同的响应，随着父类在程序运行时实例化的对象不同，执行的行为不同。
 #### 分类
-+  1、编译时多态：设计时多态方法重载 
-+  2、程序运行时动态决定调用哪一个方法(JAVA中的多态) 
++  1、编译时多态：设计时多态方法重载
++  2、程序运行时动态决定调用哪一个方法(JAVA中的多态)
 #### 必要条件
-+ 1、满足继承关系 
++ 1、满足继承关系
 + 2、父类引用指向子类对象
 + 3、重写
 #### 相关知识
@@ -209,14 +209,14 @@ interface Animal {
 ...implements 接口名称[, 其他接口名称, 其他接口名称..., ...] ...
 
 public class MammalInt implements Animal{
- 
+
    public void eat(){
       System.out.println("Mammal eats");
    }
- 
+
    public void travel(){
       System.out.println("Mammal travels");
-   } 
+   }
 }
 ```
 + 重写接口中声明的方法时，类在重写方法时要保持一致的方法名，并且应该保持相同或者相兼容的返回值类型。
@@ -231,7 +231,7 @@ public interface Hockey extends Sports, Event
 + public: 允许在任意位置进行访问
 + protected: 允许在当前类、同包子类、同包非子类、挎包子类中访问; ***挎包非子类不允许访问***
 + 默认情况下(不加以上三种修饰符之下)：允许在当前类、同包子类调用；***挎包子类不允许使用***
-![修饰符的访问范围](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/修饰符的访问范围.jpg)
+![修饰符的访问范围](picture/修饰符的访问范围.jpg)
 
 ### Java StringBuffer 和 StringBuilder 类
 +  当对字符串进行修改时，需要使用StringBuffer和StringBuilder类
@@ -258,7 +258,7 @@ public interface Hockey extends Sports, Event
 + ***Set结构的集合类***: HashSet类, TreeSet类
 + ***Queue结构的集合类***: Queue接口
 #### 集合实现类(集合类)
-+ ***LinkedList类***: 
++ ***LinkedList类***:
 	+ 该类实现了List接口,允许有null元素.主要用于创建链表数据结构
 	+ ***LinkedList的底层是一种双向循环链表***, LinkedList查找效率低但是增删效率高;
 	+ 经常用在增删操作较多而查询操作很少的情况下：队列和堆栈 (实现栈要用LinkedList)
@@ -266,22 +266,22 @@ public interface Hockey extends Sports, Event
 ```
 List list = Collections.synchronizedList(new LinkedList(...))
 ```
-+ ***ArrayList***: 
-	+ 该类实现了List的接口,实现可变大小的数组,随机访问和遍历元素时,提供更好的性能; 
++ ***ArrayList***:
+	+ 该类实现了List的接口,实现可变大小的数组,随机访问和遍历元素时,提供更好的性能;
 	+ ArrayList是异步的，因此ArrayList中的对象并不 是线程安全的;
-	+ ***底层是Object数组***,所以ArrayList具有数组的查询速度快的优点以及增删速度慢的缺点; 
+	+ ***底层是Object数组***,所以ArrayList具有数组的查询速度快的优点以及增删速度慢的缺点;
 	+ 同步要求会影响执行的效率，所以你不需要线程安全的集合那么使用ArrayList是一个很好的选择，这样可以避免由于同步带来的不必要的性能开销
-+ ***Vector***: 
++ ***Vector***:
 	+ 该类与ArrayList非常相似,但是该类是同步的,可以用在多线程的情况下,该类允许设置默认的增长长度,默认扩容方式为原来的2倍
 	+ Vector是同步的，这个类的一些方法保证了Vector中的对象的线程安全的
 	+ 从内部实现的机制来讲，ArrayList和Vector都是使用数组（Array）来控制集合中的对象，当你向两种类型中增加元素的时候，如果元素的数目超过了内部数组目前的长度他们都需要扩展内部数组的长度，Vector缺省情况下自动增长原来一倍的数组长度，ArrayList是原来的50%，所以最后你获得的这个集合所占的空间总是比你实际需要的要大，所以如果你要在集合中保存大量的数据，那么使用Vector有一些优势，因为你可以通过设置集合的初始大小来避免不必要的资源开销
-+ ***HashSet***: 
-	+ 采用哈希算法来实现Set接口 
++ ***HashSet***:
+	+ 采用哈希算法来实现Set接口
 	+ 该类实现了Set接口,不允许重复的元素出现,不保证集合元素的顺序,允许包含值为null的元素,但最多只能包含一个
 	+ 底层是数组,其查询效率也非常高
 + ***LinkedHashSet***: 具有可预知迭代顺序的Set接口的哈希表和链表实现
-+ ***HashMap***: 
-	+ 是一个散列表,它存储的内容是键值对映射(Key-Value); 
++ ***HashMap***:
+	+ 是一个散列表,它存储的内容是键值对映射(Key-Value);
 	+ 该类实现了Map接口,根据键的HashCode值存储数据,具有很快的访问速度,最多允许一个记录的键为null
 	+ 轻量级,线程不安全,不支持多线程.HashMap则是异步的，因此HashMap中的对象并不是线程安全的;
 	+ 同步的要求会影响执行的效率，所以如果你不需要线程安全的结合那么使用HashMap是一个很好的选择，这样可以避免由于同步带来的不必要的性能开销，从而提高效率，我们一般所编写的程序都是异步的
@@ -311,11 +311,11 @@ while(ite.hasNext())//判断下一个元素之后有值
 + 如果不要求线程安全，使用ArrayList，LinkedList，HashMap
 + 如果要求键值对，则使用HashMap，Hashtable
 + 如果数据量很大，又要求线程安全考虑Vector
-![集合类区别1](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/集合类区别1.png)
-![集合类区别2](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/集合类区别2.png)
-![集合类3](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/集合类3.png)
-![集合类4](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/集合类4.png)
-![集合类5](/media/xuwen/2656E8ED56E8BEA5/徐文的文件区/面试/需要插入的图片/集合类5.png)
+![集合类区别1](picture/集合类区别1.png)
+![集合类区别2](picture/集合类区别2.png)
+![集合类3](picture/集合类3.png)
+![集合类4](picture/集合类4.png)
+![集合类5](picture/集合类5.png)
 
 ### Java泛型
 	  假定我们有这样一个需求：写一个排序方法，能够对整型数组、字符串数组甚至其他任何类型的数组进行排序，该如何实现？答案是可以使用 Java 泛型。
@@ -329,32 +329,32 @@ while(ite.hasNext())//判断下一个元素之后有值
 ```
 public class GenericMethodTest
 {
-   // 泛型方法 printArray                         
+   // 泛型方法 printArray
    public static < E > void printArray( E[] inputArray )
    {
-      // 输出数组元素            
-         for ( E element : inputArray ){        
+      // 输出数组元素
+         for ( E element : inputArray ){
             System.out.printf( "%s ", element );
          }
          System.out.println();
     }
- 
+
     public static void main( String args[] )
     {
         // 创建不同类型数组： Integer, Double 和 Character
         Integer[] intArray = { 1, 2, 3, 4, 5 };
         Double[] doubleArray = { 1.1, 2.2, 3.3, 4.4 };
         Character[] charArray = { 'H', 'E', 'L', 'L', 'O' };
- 
+
         System.out.println( "整型数组元素为:" );
         printArray( intArray  ); // 传递一个整型数组
- 
+
         System.out.println( "\n双精度型数组元素为:" );
         printArray( doubleArray ); // 传递一个双精度型数组
- 
+
         System.out.println( "\n字符型数组元素为:" );
         printArray( charArray ); // 传递一个字符型数组
-    } 
+    }
 }
 
 ```
@@ -363,24 +363,24 @@ public class GenericMethodTest
 泛型类的声明和非泛型类的声明类似，除了在类名后面添加了类型参数声明部分。和泛型方法一样，泛型类的类型参数声明部分也包含一个或多个类型参数，参数间用逗号隔开。一个泛型参数，也被称为一个类型变量，是用于指定一个泛型类型名称的标识符。因为他们接受一个或多个参数，这些类被称为参数化的类或参数化的类型。
 ```
 public class Box<T> {
-   
+
   private T t;
- 
+
   public void add(T t) {
     this.t = t;
   }
- 
+
   public T get() {
     return t;
   }
- 
+
   public static void main(String[] args) {
     Box<Integer> integerBox = new Box<Integer>();
     Box<String> stringBox = new Box<String>();
- 
+
     integerBox.add(new Integer(10));
     stringBox.add(new String("菜鸟教程"));
- 
+
     System.out.printf("整型值为 :%d\n\n", integerBox.get());
     System.out.printf("字符串为 :%s\n", stringBox.get());
   }
@@ -390,24 +390,24 @@ public class Box<T> {
 类型通配符一般是使用?代替具体的类型参数。例如 List<?> 在逻辑上List<String>,List<Integer> 等所有List<具体类型实参>的父类
 ```
 import java.util.*;
- 
+
 public class GenericTest {
-     
+
     public static void main(String[] args) {
         List<String> name = new ArrayList<String>();
         List<Integer> age = new ArrayList<Integer>();
         List<Number> number = new ArrayList<Number>();
-        
+
         name.add("icon");
         age.add(18);
         number.add(314);
- 
+
         getData(name);
         getData(age);
         getData(number);
-       
+
    }
- 
+
    public static void getData(List<?> data) {
       System.out.println("data :" + data.get(0));
    }
@@ -453,18 +453,18 @@ public class SingLeton{
 + 优点：第一次调用才初始化，避免内存浪费。
 + 缺点：必须加锁 synchronized 才能保证单例，但加锁会影响效率。
 ```
-public class Singleton {  
+public class Singleton {
 	//创建对象，不实例化
-    private static Singleton instance; 
+    private static Singleton instance;
     //构造方法私有
     private Singleton (){}
     //外部获取该类对象的方法(线程安全的)
-    public static synchronized Singleton getInstance() {  
-        if (instance == null) {  
-            instance = new Singleton();  
-        }  
-        return instance;  
-    }  
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
 }
 ```
 ##### 饿汉式
@@ -472,29 +472,14 @@ public class Singleton {
 + 优点：没有加锁，执行效率会提高。
 + 缺点：类加载时就初始化，浪费内存。
 ```
-public class Singleton {  
+public class Singleton {
 	//内部创建对象
-    private static Singleton instance = new Singleton();  
+    private static Singleton instance = new Singleton();
     //构造方法私有
     private Singleton (){}
     //外部获取该类对象的方法
-    public static Singleton getInstance() {  
-    return instance;  
-    }  
+    public static Singleton getInstance() {
+    return instance;
+    }
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
