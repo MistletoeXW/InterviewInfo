@@ -14,7 +14,7 @@
 #### 继承相关的关键字
   继承可以使用extends和implements这两个关键字来实现继承，而且所有的类都是继承于java.lang.Object，当一个类有继承的两个关键字，则默认继承Object类
 + **extends**: 在 Java 中，类的继承是单一继承，也就是说，一个子类只能拥有一个父类，所以 extends 只能继承一个类
-```
+```java
 public class Animal {
     private String name;
     private int id;
@@ -29,7 +29,7 @@ public class Penguin  extends  Animal{
 }
 ```
 + **implements**: 使用implements关键字可以变相的使Java具有多继承的特性，使用范围为类继承接口的情况，可以同时继承多个接口（接口与接口之间用“，”隔开）
-```
+```java
 public interface A {
     public void eat();
     public void sleep();
@@ -43,7 +43,7 @@ public class C implements A,B {
 }
 ```
 + **super与this关键字**：我们可以通过super关键字来实现对父类成员的访问，用来引用当前对象的父类；this是指向自己的引用。
-```
+```java
 class Animal {
   void eat() {
     System.out.println("animal : eat");
@@ -62,7 +62,7 @@ class Dog extends Animal {
 ```
 + **final关键字**：final声明类可以吧类定义为是不能继承的，即最终类；或者用于修饰方法，表示该方法不能被子类重写
 + **构造器（构造方法或者构造函数）**: 子类是不继承父类的构造器（构造方法或者构造函数）的，它只是调用（隐式或显式）。**如果父类的构造器带有参数**，则必须在子类的构造器中显式地通过 **super** 关键字调用父类的构造器并配以适当的参数列表;  **如果父类构造器没有参数**，则在子类的构造器中不需要使用 super 关键字调用父类构造器，系统会自动调用父类的无参构造器
-```
+```java
 class SuperClass {
   private int n;
   SuperClass(){
@@ -192,7 +192,7 @@ class SubClass2 extends SuperClass{
 + ***一个类可以继承一个抽象类，但是一个类却可以实现多个接口***
 #### 接口的声明
 Interface关键字用来声明一个接口
-```
+```java
 [可见度] interface 接口名称 [extends 其他的接口名] {
         // 声明变量
         // 抽象方法
@@ -205,7 +205,7 @@ interface Animal {
 #### 接口的实现
 + 当类实现接口的时候，类要实现接口中所有的方法。否则，类必须声明为抽象的类。
 + 类使用implements关键字实现接口。在类声明中，Implements关键字放在class声明后面。
-```
+```java
 ...implements 接口名称[, 其他接口名称, 其他接口名称..., ...] ...
 
 public class MammalInt implements Animal{
@@ -223,7 +223,7 @@ public class MammalInt implements Animal{
 #### 接口的继承
 + 一个接口能继承另一个接口，和类之间的继承方式比较相似。接口的继承使用***extends***关键字，子接口继承父接口的方法
 + 在Java中，类的多继承是不合法，但接口允许多继承,在接口的多继承中extends关键字只需要使用一次，在其后跟着继承接口。
-```
+```java
 public interface Hockey extends Sports, Event
 ```
 ### 修饰符的访问范围
@@ -263,7 +263,7 @@ public interface Hockey extends Sports, Event
 	+ ***LinkedList的底层是一种双向循环链表***, LinkedList查找效率低但是增删效率高;
 	+ 经常用在增删操作较多而查询操作很少的情况下：队列和堆栈 (实现栈要用LinkedList)
 	+ 该类没有同步方法,如果多个线程同时访问一个List,则必须自己实现访问同步,解决方案是在创建List时候构造一个同步的List.例如:
-```
+```java
 List list = Collections.synchronizedList(new LinkedList(...))
 ```
 + ***ArrayList***:
@@ -294,7 +294,7 @@ List list = Collections.synchronizedList(new LinkedList(...))
 + 通常情况下，你会希望遍历一个集合中的元素。例如，显示集合中的每个元素。
 + 一般遍历数组都是采用for循环或者增强for，这两个方法也可以用在集合框架，但是还有一种方法是采用迭代器遍历集合框架，它是一个对象，实现了Iterator 接口或ListIterator接口。
 + 迭代器，使你能够通过循环来得到或删除集合的元素。
-```
+```java
 Iterator<String> ite=list.iterator();
 while(ite.hasNext())//判断下一个元素之后有值
 {
@@ -326,7 +326,7 @@ while(ite.hasNext())//判断下一个元素之后有值
 + 每一个类型参数声明部分包含一个或多个类型参数，参数间用逗号隔开。一个泛型参数，也被称为一个类型变量，是用于指定一个泛型类型名称的标识符。
 + 类型参数能被用来声明返回值类型，并且能作为泛型方法得到的实际参数类型的占位符。
 + 泛型方法体的声明和其他方法一样。注意类型参数只能代表引用型类型，不能是原始类型（像int,double,char的等）。
-```
+```java
 public class GenericMethodTest
 {
    // 泛型方法 printArray
@@ -361,7 +361,7 @@ public class GenericMethodTest
 
 #### 泛型类
 泛型类的声明和非泛型类的声明类似，除了在类名后面添加了类型参数声明部分。和泛型方法一样，泛型类的类型参数声明部分也包含一个或多个类型参数，参数间用逗号隔开。一个泛型参数，也被称为一个类型变量，是用于指定一个泛型类型名称的标识符。因为他们接受一个或多个参数，这些类被称为参数化的类或参数化的类型。
-```
+```java
 public class Box<T> {
 
   private T t;
@@ -388,7 +388,7 @@ public class Box<T> {
 ```
 #### 类型通配符
 类型通配符一般是使用?代替具体的类型参数。例如 List<?> 在逻辑上List<String>,List<Integer> 等所有List<具体类型实参>的父类
-```
+```java
 import java.util.*;
 
 public class GenericTest {
@@ -416,6 +416,10 @@ public class GenericTest {
 ```
 
 ## 常见的设计模式及Java实现
+### 设计模式简介
+#### 概念
++ 设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
++ 项目中合理地运用设计模式可以完美地解决很多问题，每种模式在现实中都有相应的原理来与之对应，每种模式都描述了一个在我们周围不断重复发生的问题，以及该问题的核心解决方案，这也是设计模式能被广泛应用的原因。
 ### 单例模式
 #### 概念
 + 单例模式是Java中最简单的设计模式之一.这种类型的设计模式属于创建型模式,它提供了一种创建对象的最佳方式
@@ -433,7 +437,7 @@ public class GenericTest {
 #### 几种实现方式
 ##### 懒汉式(线程不安全)
 + 这种方式是最基本的实现方式，这种实现最大的问题就是不支持多线程。没有加锁 synchronized，这种方式 lazy loading 很明显，不要求线程安全，在多线程不能正常工作。。
-```
+```java
 public class SingLeton{
     //创建对象，不实例化
     private static SingLeton instance;
@@ -452,7 +456,7 @@ public class SingLeton{
 + 这种方式具备很好的 lazy loading，能够在多线程中很好的工作，但是，效率很低，99% 情况下不需要同步。
 + 优点：第一次调用才初始化，避免内存浪费。
 + 缺点：必须加锁 synchronized 才能保证单例，但加锁会影响效率。
-```
+```java
 public class Singleton {
 	//创建对象，不实例化
     private static Singleton instance;
@@ -471,7 +475,7 @@ public class Singleton {
 + 这种方式比较常用，但容易产生垃圾对象。在类中首先创建对象，再通过对外界提供静态方法将对象实例返回给外界使用
 + 优点：没有加锁，执行效率会提高。
 + 缺点：类加载时就初始化，浪费内存。
-```
+```java
 public class Singleton {
 	//内部创建对象
     private static Singleton instance = new Singleton();
@@ -483,3 +487,26 @@ public class Singleton {
     }
 }
 ```
+### 工厂模式
+#### 概念
++ 在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。
+#### 介绍
++ ***意图:*** 定义一个创建对象的接口，让其子类自己决定实例化哪一个工厂类，工厂模式使其创建过程延迟到子类进行。
++ ***主要解决:*** 解决接口选择问题
++ ***解决方案:*** 让子类实现一个工厂接口,返回的是一个抽象的产品
++ ***优点***:
+  + 一个调用者想创建一个对象,只要知道其名称就行了
+  + 扩展性高,如果想增加一个产品,只要扩展一个工厂类就可以
+  + 屏蔽产品的具体实现,调用者只需要关心产品的接口
++ ***缺点:*** 每次增加一个产品时，都需要增加一个具体类和对象实现工厂，使得系统中类的个数成倍增加，在一定程度上增加了系统的复杂度，同时也增加了系统具体类的依赖。
+#### 简单工厂模式
+##### 介绍
++ 属于创建型模式，又叫做 ***静态工厂方法模式***
++ 是由一个工厂对象决定创建出哪一种产品类的实例。实质是由一个工厂类根据传入的参数，动态决定应该创建哪一个产品类（这些产品类继承自一个父类或接口）的实例。
++ ***作用:*** 将 ***“类实例化的操作”*** 与 ***“使用对象的操作”*** 分开，让使用者不用知道具体参数就可以实例化出所需要的“产品”类，从而避免了在客户端代码中显式指定，实现了解耦。
+##### 实现
++ ***工厂:*** 负责实现所有实例的内部逻辑,并提供一个外界调用的方法,创建所需的产品对象.
++ ***抽象产品:*** 负责描述产品的公共接口
++ ***具体产品:*** 描述生产的具体产品
++ ***实例***
+  + 假设有一台饮料机(工厂),可以调出各种口味的饮料(抽象产品),有三个按钮(参数)对应这三种饮料(具体产品).这时候你可以根据点击按钮来选择你喜欢的饮料.
