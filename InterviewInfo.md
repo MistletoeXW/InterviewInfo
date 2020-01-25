@@ -453,9 +453,10 @@ public class SingLeton{
 }
 ```
 ##### 懒汉式(线程安全)
++ 对公共的getIntanse()函数进行synchronized加锁,那么在同一个时间点只能有一个线程能够进入该方法,从而避免了实例话多次instance
 + 这种方式具备很好的 lazy loading，能够在多线程中很好的工作，但是，效率很低，99% 情况下不需要同步。
 + 优点：第一次调用才初始化，避免内存浪费。
-+ 缺点：必须加锁 synchronized 才能保证单例，但加锁会影响效率。
++ 缺点：必须加锁 synchronized 才能保证单例，但加锁会影响效率。(当一个线程进入该方法之后,其他试图进入该方法的线程都必须等待,即使instance已经被实例化)
 ```java
 public class Singleton {
 	//创建对象，不实例化
@@ -483,10 +484,53 @@ public class Singleton {
     private Singleton (){}
     //外部获取该类对象的方法
     public static Singleton getInstance() {
-    return instance;
+      return instance;
     }
 }
 ```
+##### 双重校验锁-线程安全
++ instance只需要被实例化一次,之后就可以直接使用.加锁操作只需要对实例化那一部分的代码进行,只有instance没有被实例化时,才需要进行加锁
++ 双重校验锁先判断instance是否被实例化,如果没有被实例化,那么才对实例化语句进行加锁
+```java
+public class SingLeton{
+    //创建对象,不进行实例化
+    /**
+    uniqueInstance 采用 volatile 关键字修饰也是很有必要的， uniqueInstance = new Singleton(); 这段代码其实是分为三步执行：
+      1.为 uniqueInstance 分配内存空间
+      2.初始化 uniqueInstance
+      3.将 uniqueInstance 指向分配的内存地址
+
+      但是由于 JVM 具有指令重排的特性，执行顺序有可能变成 1>3>2。指令重排在单线程环境下不会出现问题，但是在多线程环境下会导致一个线程获得还没有初始化的实例。例如，线程 T1 执行了 1 和 3，此时 T2 调用 getUniqueInstance() 后发现 uniqueInstance 不为空，因此返回 uniqueInstance，但此时 uniqueInstance 还未被初始化。
+
+      使用 volatile 可以禁止 JVM 的指令重排，保证在多线程环境下也能正常运行。
+    */
+
+    private volatile static SingLeton instance;
+    //私有的构造函数
+    private SingLeton(){
+    }
+    //外部获取该类对象的方法
+    /**
+    这里必须使用双重校验锁,也就是需要使用两个if语句:第一个语句用来避免instance已经被实例化后的加锁操作,而第二个if语句进行了加锁,所以只能有一个线程进入,就不会出现instance == null时两个线程同时进行实例化操作
+    */
+    pubilc static SingLeton getInstance(){
+        if(intance == null){
+            synchronized(SingLeton.class){
+                if(intence == null){
+                    instence = new SingLeton;
+                }
+
+            }
+
+        }
+        return intence;
+
+    }
+
+}
+
+```
+
 ### 工厂模式
 #### 概念
 + 在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。
@@ -510,3 +554,47 @@ public class Singleton {
 + ***具体产品:*** 描述生产的具体产品
 + ***实例***
   + 假设有一台饮料机(工厂),可以调出各种口味的饮料(抽象产品),有三个按钮(参数)对应这三种饮料(具体产品).这时候你可以根据点击按钮来选择你喜欢的饮料.
+```java
+public interface Product(){
+
+}
+public class product1 implements Product{
+
+}
+public class product2 implements Product{
+
+}
+public class product3 implements Product{
+
+}
+
+//以下是简单工厂实现它被所有需要进行实例化的客户类调用
+pubilc class SimpleFactory{
+    public Product createProduct(int type){
+        if(type == 1){
+          return new product1;
+        }else if(type == 2){
+          return new product2
+        }else {
+          return new product3;
+        }
+    }
+}
+
+//客户端根据需要获取实例化对象
+public class Client{
+    public static void main(String[] args){
+        SimpleFactory simpleFactory = new SimpleFactory();
+
+        Product product1 = simpleFactory.createProduct(1);
+
+        Product product2 = simpleFactory.createProduct(2);
+
+        Product product3 = simpleFactory.createProduct(3);
+
+    }
+
+}
+
+
+```
