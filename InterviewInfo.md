@@ -478,7 +478,7 @@ public class Singleton {
 + 缺点：类加载时就初始化，浪费内存。
 ```java
 public class Singleton {
-	//内部创建对象
+    //内部创建对象
     private static Singleton instance = new Singleton();
     //构造方法私有
     private Singleton (){}
@@ -627,3 +627,66 @@ public class ConcreateFactory2 extends Factory{
 #### 抽象工厂
 + 提供一个接口,用于创建相关的对象家族
 + 抽象工厂模式创建的是对象家族,也就是很多对象而不是一个对象,并且这些对象也是相关的,也就是说必须一起创建起来.而工厂方法模式只是用于创建一个对象,这和抽象工厂模式
++ 抽象工厂模式用到了工厂方法模式创建单一对象,创建实例化对象的方法都是由子类来实现,这些方法单独来看都是在创建一个对象,这符合工厂方法模式的定义
++ 至于创建对象的家族这一概念是在Client客户端中体现,客户端要通过抽象工厂类同时调用创建实例化对象的方法来创建所有的对象,在这里这些对象就有很大的相关性,客户端Client需要同时创建出所有对象.
+```java
+public class AbstractProductA{
+
+}
+public class AbstractProductB{
+
+}
+public class ProductA1 extends AbstractProductA{
+
+}
+public class ProductA2 extends AbstractProductA{
+
+}
+public class ProductB1 extends AbstractProductB{
+
+}
+public class ProductB2 extends AbstractProductB{
+
+}
+public abstract class AbstractFactory{
+    abstract AbstractProductA createProductA();
+    abstract AbstractProductB createProductB();
+
+}
+pubilc class ConcreateFactory1 extends AbstractFactory{
+    AbstractFactoryA createProductA(){
+        return new ProductA1();
+    }
+    AbstractProductB createProductB(){
+        return new ProductB1();
+    }
+}
+public class ConcreateFactory2 extends AbstractFactory{
+    AbstractFactoryA createProductA(){
+        return new ProductA2();
+    }
+    AbstractProductB createProductB(){
+        return new ProductB2();
+    }
+}
+
+public class Client{
+    pubilc static void main(String[] args){
+        AbstractFactory AbstractFactory = new ConcreateFactory1();
+
+        AbstractFactoryA productA = AbstractFactory.createProductA();
+
+        AbstractProductB productB = AbstractFactory.createProductB();
+    }
+
+
+}
+```
+####  生成器
++ 使用多个简单的对象一步一步构建成一个复杂的对象,这种类型的设计模式属于创建型模式,它提供了一种创建对象的最佳方式.
++ 一个Builder类会一步一步构造最终的对象,该Builder类是独立于其他对象的.
+##### 介绍
++ ***意图***: 将一个复杂的构建与其表示相分离,使得同样的构建过程可以创建不同的表示
++ ***主要解决***: 在软件系统中,有时候面临一个复杂的创建工作,其通常由各个部分的子对象用一定的算法构成,由于需求的变化,这个复杂对象的各个部分经常面临着剧烈的变化,但是将它们组合在一起的算法却相对稳定.
++ ***何时使用***: 一些基本部件不会变,而其组合经常变化的时候
++ 
