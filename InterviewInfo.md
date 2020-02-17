@@ -197,7 +197,7 @@ class SubClass2 extends SuperClass{
 +  2、程序运行时动态决定调用哪一个方法(JAVA中的多态)
 #### 必要条件
 + 1、满足继承关系
-+ 2、父类引用指向子类对象
++ 2、父类引用指向子类对象(向上转型)
 + 3、重写
 #### 相关知识
 + **向上转型**（父类--->子类）（隐式转型、自动转型）：把子类的对象转型为父类对象，父类引用指向子类实例（例：Animal one = new Cat();）。可以调用子类重写父类的方法以及父类派生的方法，但无法调用子类独有的方法。（***注意：如果父类中有static修饰的方法，此方法是不允许被子类所重写，所以，向上转型之后，只能调用父类原有的静态方法，如果要调用子类的静态方法，只有再进行向下***）
@@ -302,15 +302,29 @@ public interface Hockey extends Sports, Event
   Java 集合框架主要包括两种类型的容器，一种是集合（Collection），存储一个元素集合，另一种是图（Map），存储键/值对映射。Collection 接口又有 3 种子类型，List、Set 和 Queue，再下面是一些抽象类，最后是具体实现类，常用的有 ArrayList、LinkedList、HashSet、LinkedHashSet、HashMap、LinkedHashMap 等等
 + 接口：是代表集合的抽象数据类型。例如：Collocation、List、Set、Map等。之所以定义多个
 + 实现：是集合接口的具体实现，从本质上讲，它们是可以重复使用的数据结构，例如：ArratList、LinkedList、HashSet、HashMap。
+![集合框架](picture/集合类.png)
+![Map框架](picture/Map框架.png)
 #### 集合接口
-+ Collection接口: 是最基本的集合接口,存储一组不唯一,无序的对象
-+ List接口: 是一个有序的Collection,使用此接口能够精确地
-+ Set接口: Set具有与Collection完全一样的接口,只是行为上不同,Set不保存重复的元素; Set接口存储一组唯一,无序的对象
-+ Map接口: 存储一组键值对象,提供Key(键)到value(值)的映射
++ **Collection接口**: 是最基本的集合接口,存储一组不唯一,无序的对象
++ **List接口**: 是一个有序的Collection
+  + ArrayList: 基于动态数组实现,支持随机访问
+  + Vector: 和ArrayList类似,但是它是线程安全的
+  + LinkList: 基于双向链表实现,只能顺序访问,但是可以快速地在链表中插入和删除元素,同时,还可以用作栈,队列和双向队列
++ **Set接口**: Set具有与Collection完全一样的接口,只是行为上不同,Set不保存重复的元素; Set接口存储一组唯一,无序的对象
+  + HashSet: 基于哈希表实现,支持快速查找,查找效率为0(1),但是不支持有序性操作,并且失去了元素的插入顺序信息,也就是说使用Iterator遍历的结果是不确定的
+  + LinkListSet: 具有HashSet的查找效率,并且内部使用双向链表维护元素的插入顺序.
+  + TreeSet: 基于红黑树实现,支持有序性操作,但是查找效率不如HashSet,查找时间复杂度为O(logn).
++ **Queue**:
+  + LinkedList: 用来实现队列
+  + PriorityQueue: 基于堆结构(最小堆)实现,可以用来实现优先队列
++ **Map接口**: 存储一组键值对象,提供Key(键)到value(值)的映射
+  + HashMap: 基于哈希表实现
+  + TreeMap: 基于红黑树实现
+  + HashTable: 和HashMap类似,但是它是线程安全的,这意味着同一时刻多个线程同时写入HashTable不会导致数据不一致.
 #### Set与List的区别
 + Set接口实例存储的是无序的,不重复的数据; List接口实例存储的是有序的,可以重复的数据
-+ Set检索效率低下,删除和插入效率高,插入和删除不会引起元素位置的改变***(实现类有HashSet和TreeSet)***
-+ List和数组类似,可以动态增长,根据实际存储的数据长度自动增长List长度.查找元素效率高,插入删除效率低,因为会引起其他元素位置改变***(实现类有ArrayLIst, LinkedList, Vector)***
++ Set检索效率低下,删除和插入效率高,插入和删除不会引起元素位置的改变 **(实现类有HashSet和TreeSet)**
++ List和数组类似,可以动态增长,根据实际存储的数据长度自动增长List长度.查找元素效率高,插入删除效率低,因为会引起其他元素位置改变 **(实现类有ArrayLIst, LinkedList, Vector)**
 #### 常用的集合类
 + ***List结构的集合类***: ArrayList类, LinkedList类, Vector类, Stack类
 + ***Map结构的集合类***: HashMap类, Hashtable类
@@ -344,7 +358,7 @@ List list = Collections.synchronizedList(new LinkedList(...))
 	+ 该类实现了Map接口,根据键的HashCode值存储数据,具有很快的访问速度,最多允许一个记录的键为null
 	+ 轻量级,线程不安全,不支持多线程.HashMap则是异步的，因此HashMap中的对象并不是线程安全的;
 	+ 同步的要求会影响执行的效率，所以如果你不需要线程安全的结合那么使用HashMap是一个很好的选择，这样可以避免由于同步带来的不必要的性能开销，从而提高效率，我们一般所编写的程序都是异步的
-+***Hashtable***:
++ ***Hashtable***:
 	+ 重量级,线程安全,Hashtable是同步的，这个类中的一些方法保证了Hashtable中的对象是线程安全的
 	+ Hashtable是不能放入空值（null）的
 
@@ -375,6 +389,12 @@ while(ite.hasNext())//判断下一个元素之后有值
 ![集合类3](picture/集合类3.png)
 ![集合类4](picture/集合类4.png)
 ![集合类5](picture/集合类5.png)
+
++ 这里再看几篇链接阅读:
+  + https://github.com/CyC2018/CS-Notes/blob/master/notes
+  + https://www.jianshu.com/p/75adf47958a7
+  + http://www.zhangchangle.com/2018/02/07/Java%E9%9B%86%E5%90%88%E4%B9%8BHashMap/
+
 
 ### Java泛型
 	  假定我们有这样一个需求：写一个排序方法，能够对整型数组、字符串数组甚至其他任何类型的数组进行排序，该如何实现？答案是可以使用 Java 泛型。
@@ -475,6 +495,12 @@ public class GenericTest {
 ```
 
 ## 常见的设计模式及Java实现
+### 设计原则
++ **单一责任原则**: 一个类只负责一件事情,当这个类要做过多的事情过后,就需要分解这个类
+  如果一个类承担的职责过多,就等于把这些职责耦合起来了,一个职责的变化可能会削弱这个类完成其它职责的能力
++ **开放封闭原则**: 类应该对扩展开放,对修改关闭.扩展的意思就是添加新功能的意思,因此该原则要求在添加新功能时不需要修改代码.
++ **里氏替换原则**: 子类必须能够替换掉所有的父类对象. 继承是一中IS-A的关系,子类需要能够当父类来使用,并且需要比父类更加特殊.如果不满足这个原则,那么各个子类的行为上就会有很大的差异,增加继承体系的复杂度
++ 
 ### 设计模式简介
 #### 概念
 + 设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。
