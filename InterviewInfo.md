@@ -620,28 +620,15 @@ public class SingLeton{
 
 ### 工厂模式
 #### 概念
-+ 在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。
-#### 介绍
-+ ***意图:*** 定义一个创建对象的接口，让其子类自己决定实例化哪一个工厂类，工厂模式使其创建过程延迟到子类进行。
-+ ***主要解决:*** 解决接口选择问题
-+ ***解决方案:*** 让子类实现一个工厂接口,返回的是一个抽象的产品
-+ ***优点***:
-  + 一个调用者想创建一个对象,只要知道其名称就行了
-  + 扩展性高,如果想增加一个产品,只要扩展一个工厂类就可以
-  + 屏蔽产品的具体实现,调用者只需要关心产品的接口
-+ ***缺点:*** 每次增加一个产品时，都需要增加一个具体类和对象实现工厂，使得系统中类的个数成倍增加，在一定程度上增加了系统的复杂度，同时也增加了系统具体类的依赖。
-#### 简单工厂模式
-##### 介绍
-+ 属于创建型模式，又叫做 ***静态工厂方法模式***
-+ 是由一个工厂对象决定创建出哪一种产品类的实例。实质是由一个工厂类根据传入的参数，动态决定应该创建哪一个产品类（这些产品类继承自一个父类或接口）的实例。
-+ ***作用:*** 将 ***“类实例化的操作”*** 与 ***“使用对象的操作”*** 分开，让使用者不用知道具体参数就可以实例化出所需要的“产品”类，从而避免了在客户端代码中显式指定，实现了解耦。
-##### 实现
-+ ***工厂:*** 负责实现所有实例的内部逻辑,并提供一个外界调用的方法,创建所需的产品对象.
-+ ***抽象产品:*** 负责描述产品的公共接口
-+ ***具体产品:*** 描述生产的具体产品
-+ ***实例***
-  + 假设有一台饮料机(工厂),可以调出各种口味的饮料(抽象产品),有三个按钮(参数)对应这三种饮料(具体产品).这时候你可以根据点击按钮来选择你喜欢的饮料.
++ 工厂模式分为工厂方法模式和抽象工厂模式
+#### 工厂方法模式
++ 工厂方法模式分为以下三种:
+  + **普通工厂方法模式**: 建立一个工厂类,对实现了同一接口的一些类进行实例的创建.通过传入参数的方式,选择要实例化的对象.
+  + **多个工厂方法模式**: 对普通工厂模式的改进,在普通工厂方法模式中,如果传递的字符出错,则不能正确创建对象,而多个工厂方法模式是提供多个工厂方法,分别创建对象.
+  + **静态工厂方模式**: 将上面的多个工厂模式里面的方法设置为静态的,不需要创建实例,直接调用即可.
 ```java
+
+//==================普通工厂方法模式========================
 public interface Product(){
 
 }
@@ -680,16 +667,10 @@ public class Client{
         Product product3 = simpleFactory.createProduct(3);
 
     }
-
 }
 
-```
 
-#### 工厂方法
-+ 定义了一个创建对象的接口,单由子类决定要实例化那个类.工厂方法把实例化操作推迟到子类.
-+ 在简单工厂中,创建对象的是另一个类,而在工厂方法中,是由子类来创建对象
-##### 实现
-```java
+//==========================多个工厂方法模式========================
 public abstract class Factory(){
     abstract pubilc Product facoryMethod();
     public void doSomething(){
@@ -705,6 +686,26 @@ public class ConcreateFactory1 extends Factory{
 
 public class ConcreateFactory2 extends Factory{
     public Product facoryMethod(){
+        return new ConcreateFactory2;
+    }
+}
+
+//=======================静态工厂方法模式============================
+public abstract class Factory(){
+    abstract pubilc Product facoryMethod();
+    public void doSomething(){
+      Product product = factoryMethod();
+    }
+}
+
+public class ConcreateFactory1 extends Factory{
+    public static Product facoryMethod(){
+        return new ConcreateFactory1;
+    }
+}
+
+public class ConcreateFactory2 extends Factory{
+    public static Product facoryMethod(){
         return new ConcreateFactory2;
     }
 }
@@ -769,10 +770,106 @@ public class Client{
 
 }
 ```
+### 创建者模式
++ 工厂模式是提供单个类的创建模式,而创建者模式则是将各种产品集中起来进行管理,用来创建复合对象.
++ 创建者模式隐藏了复杂的创建过程,它把复杂的构建过程加以抽象,通过子类继承或者重载的方式,动态创建具有复合属性的对象.
++ 主要作用: 在用户不知道对象的建造过程和细节的情况下就可以直接创建复杂的对象.
+##### 模式讲解
++ 指挥者(Director)直接和客户(Client)进行需求沟通
++ 沟通后指挥者将客户创建产品的需求划分为各个部件的建造请求(Builder)
++ 而建造者模式则是将各种产品集中起来进行管理,用来创建复合对象
++ 各个具体建造者负责进行产品部件的构建
++ 最终构建成具体产品（Product)
+#### 最常用的实例
++ 当一个类构造器需要传入很多参数时,如果创建这个类的实例,代码可读性就非常差,而且很容易引入错误,此时可以利用Builder模式进行重构.
+```java
+
+//传统的类结构
+public class Computer {
+    private String cpu;
+    private String screen;
+    private String memory;
+    private String mainboard;
+    public Computer(String cpu, String screen, String memory, String mainboard) {
+        this.cpu = cpu;
+        this.screen = screen;
+        this.memory = memory;
+        this.mainboard = mainboard;
+    }
+}
+
+//使用Builder模式改造后的类
+public class NewComputer {
+    private String cpu;
+    private String screen;
+    private String memory;
+    private String mainboard;
+    public NewComputer() {
+        throw new RuntimeException(“can’t init”);
+    }
+    private NewComputer(Builder builder) {
+        cpu = builder.cpu;
+        screen = builder.screen;
+        memory = builder.memory;
+        mainboard = builder.mainboard;
+    }
+    //将Builder类定义为静态内部类
+    public static final class Builder{
+        private String cpu;
+        private String screen;
+        private String memory;
+        private String mainboard;
+
+        public Builder() {}
+
+        public Builder cpu(String val) {
+          cpu = val;
+          return this;
+        }
+        public Builder screen(String val) {
+            screen = val;
+            return this;
+        }
+        public Builder memory(String val) {
+            memory = val;
+            return this;
+        }
+        public Builder mainboard(String val) {
+            mainboard = val;
+            return this;
+        }
+
+        public NewComputer build() {
+            return new  NewComputer(this);}
+        }
+    }
+
+    //客户端
+    public class Click {
+    public static void main(String[] args) {
+        // 非 Builder 模式
+        Computer computer = new Computer(“cpu”, “screen”, “memory”, “mainboard”);
+        // Builder 模式
+        NewComputer newComputer = new NewComputer.Builder()
+        .cpu(“cpu”)
+        .screen(“screen”)
+        .memory(“memory”)
+        .mainboard(“mainboard”)
+        .build();
+    }
+}
+```
 
 ## 适配器
-+ 适配器模式的意图是将一个已经存在的类/接口进行复用,将其转换/具体化为客户希望的另外的一个类/接口
-+ 举例: 手机和手机充电器,充电器(变压器)就是一个适配器
++ 将一个接口转换成客户希望的另一个接口，使接口不兼容的那些类可以一起工作
++ 分类:
+  + **类适配器**:适配器与适配者之间是继承(或者实现)关系
+  + **对象适配器**: 适配器与适配者之间是关联关系
++ 角色:
+  + **Target(目标抽象类)**: 目标抽象类定义客户所需要接口,可以是一个抽象类或者是接口,也可以是具体类
+  + **Adapter(适配器类)**: 适配器可以调用另一个接口,作为一个转换器,对Adaptee和Target进行适配,适配器类是核心.
+  + **Adaptee(适配者类)**: 适配者即被适配的角色,它定义了一个已经存在的接口,这个接口需要适配.
+
 
 ## 装饰者模式
 + 装饰就是把这个装饰者套在被装饰者之上,从而动态扩展被装饰者的功能.装饰者的方法有一部分是自己的,这属于它的功能,然后调用被装饰者的方法实现,从而也保留了被装饰者的功能.
@@ -884,4 +981,123 @@ public class Client{
 ![三级封锁协议](picture/三级封锁协议)
 
 ## MYSQL
-### 索引
+### SQL注入
++ 如果您通过网页获取用户输入的数据并将其插入一个MySQL数据库，那么就有可能发生SQL注入安全的问题.
++ 所谓SQL注入，就是通过把SQL命令插入到Web表单递交或输入域名或页面请求的查询字符串，最终达到欺骗服务器执行恶意的SQL命令。
++ 我们永远不要信任用户的输入，我们必须认定用户输入的数据都是不安全的，我们都需要对用户输入的数据进行**过滤处理**
+```sql
+比如代码 ："select * from user where id =" + id;
+正常执行不会出现问题，一旦被sql注入，比如将传入参数id=“3 or 1 = 1”，那么sql会变成
+"select * from user where id = 3 or 1 = 1",这样全部用户信息就一览无遗了。
+```
+#### 防止注入的办法
++ 1. 永远不要信任用户的输入。对用户的输入进行校验，可以通过正则表达式，或限制长度；对单引号和 双"-"进行转换等。
++ 2. 不要把机密信息直接存放，加密或者hash掉密码和敏感的信息.
++ 3. 应用的异常信息应该给出尽可能少的提示，最好使用自定义的错误信息对原始错误信息进行包装.
++ 4. 远不要使用管理员权限的数据库连接，为每个应用使用单独的权限有限的数据库连接.
+#### Mybatis中处理注入问题
++ 下面是Mybatis的两种SQL
+```xml
+<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+                        parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+                         parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where id = ${id,jdbcType=INTEGER}
+  </select>
+```
++ 可以很清楚看到主要是 # 和 $区别:
+  + "#" 将传入的数据当成一个字符串,会对传入的数据加一个双引号,比如where id = "123"
+  + "$" 将传入的数据直接显示在sql中,比如where id = 123. 如果传入的值是 ;drop table user; ，则解析成的sql为：select id, username, password, role from user where username=;drop table user;  这个就很危险了，存在被注入攻击可能。
++ 因此，#与$相比，**"#"可以很大程度的防止sql注入**，因为对sql做了预编译处理，因此在使用中一般使用#{}方式
+
+#### MYSQL查询优化
++ 一个查询的生命周期大致可以按照顺序来看：从客户端，到服务器，然后在服务器上进行解析，生成执行计划，执行，并返回结果给客户端。其中在“执行”阶段包含了大量为了检索数据到存储引擎的调用以及调用后的数据处理，包括排序、分组。
++ 查询速度慢的原因在于：某些不必要的额外操作，某些操作被额外地重复很多次，某些操作执行得太慢。
++ 优化查询的目的就是减少和消除这些操作所花费的时间。
+##### 慢查询基础: 优化数据访问
++ 查询性能低下最基本的原因是访问的数据太多。所以对于低效的查询可以从下面两个方面来分析：
+  + 1.确认应用程序是否在检索大量超过需要的数据。
+  + 2.确认MySQL服务器层是否在分析大量超过需要的数据行。
+##### 是否向数据库请求了不需要的数据
++ 请求多余的数据会给MySQL服务器带来额外的负担，并增加网络开销，另外也会消耗应用服务器的CPU内存和资源。抵效的查询包括:
+  + 1、查询不需要的记录：例如在新闻网站中取出100条记录，但是只是在页面上显示10条。实际上MySQL会查询出全部的结果，客户端的应用程序会接收全部的结果集数据，然后抛弃其中大部分数据。**最简单有效的解决方法就是在这样的查询后面加上LIMIT。**
+  + 2. 多表关联时返回全部列,例如:
+  ![多表关联](picture/多表关联.png)
+  + 3. 总是取出全部的列：每次看到SELECT *的时候都需要怀疑是不是真的需要返回全部的列？取出全部列，会主优化器无法完成索引覆盖扫描这类优化，还会为服务器带来额外的IO、内存和CPU的消耗。在查询语句中慎用select * 语句，我们对数据库的数据应该只取所需。
+  + 4. 重复查询相同的数据：不要不断地重复执行相同的查询，然后每次都返回完全相同的数据。当初次查询的时候将这个数据缓存起来，需要的时候从缓存中取出，这样性能显然更好。
+##### 重构查询的方式
++ 在MySQL内部每秒能够扫描内存中上百行的数据，相比之下MySQL响应数据给客服端就慢的多了。其他条件都相同的时候，使用尽可能少的查询是更好的。但是并不否认**将一个大的查询分解为多个小的查询**。
++ 1. **切分查询**: 将一个大的查询切分为许多小的查询，每个小查询功能完全一样，返回一部分结果，我们只需重复执行小查询就行。
++ 2. **分解关联查询**: 对每一个表进行一次单表查询，然后再应用程序中进行关联
+  + 将查询分解后,执行单个查询可以减少锁的竞争
+  + 在应用层做关联,可以更容易的对数据库进行拆分,更容易做到高性能和扩展
+##### 优化特定类型的查询
++ **优化子查询** ：关于优化子查询我们给出的最重要的优化建议就是尽可能使用关联查询代替
++ **优化关联查询**:
+  + 确保ON或者USING子句中的列上有索引
+  + 确保任何的GROUP BY 和ORDER BY中的表达式只涉及到一个表中的列
+
+
+
+##Linux面试常见问题
+#### 文件管理
++ 文件传输
+  + scp: 加密的方式在本地主机和远程主机之间复制文件
+  + rcp: 在两台Linux主机之间的文件复制,操作更加简单
++ 文件和目录
+  + cd /home 进入 '/ home' 目录'
+  + cd .. 返回上一级目录
+  + cd ../.. 返回上两级目录
+  + pwd 显示工作路径
+  + ls 查看目录中的文件
+  + ls -F 查看目录中的文件
+  + ls -l 显示文件和目录的详细资料
+  + ls -a 显示隐藏文件
+  + tree 显示文件和目录由根目录开始的树形结构(1)
+  + lstree 显示文件和目录由根目录开始的树形结构(2)
+  + mkdir dir1 创建一个叫做 'dir1' 的目录'
+  + mkdir dir1 dir2 同时创建两个目录
+  + mkdir -p /tmp/dir1/dir2 创建一个目录树
+  + rm -f file1 删除一个叫做 'file1' 的文件'
+  + rmdir dir1 删除一个叫做 'dir1' 的目录'
+  + rm -rf dir1 删除一个叫做 'dir1' 的目录并同时删除其内容
+  + rm -rf dir1 dir2 同时删除两个目录及它们的内容
+  + mv dir1 new_dir 重命名/移动 一个目录
+  + cp file1 file2 复制一个文件
+  + cp dir/* . 复制一个目录下的所有文件到当前工作目录
+  + cp -a /tmp/dir1 . 复制一个目录到当前工作目录
+  + cp -a dir1 dir2 复制一个目录
+  + ln -s file1 lnk1 创建一个指向文件或目录的软链接
+  + ln file1 lnk1 创建一个指向文件或目录的物理链接
++ 文件搜索
+  + find / -name file1 从 '/' 开始进入根文件系统搜索文件和目录
+  + find / -user user1 搜索属于用户 'user1' 的文件和目录
+  + find /home/user1 -name \*.bin 在目录 '/ home/user1' 中搜索带有'.bin' 结尾的文件
+  + find /usr/bin -type f -atime +100 搜索在过去100天内未被使用过的执行文件
+  + find /usr/bin -type f -mtime -10 搜索在10天内被创建或者修改过的文件
+  + find / -name \*.rpm -exec chmod 755 '{}' \; 搜索以 '.rpm' 结尾的文件并定义其权限
+  + find / -xdev -name \*.rpm 搜索以 '.rpm' 结尾的文件，忽略光驱、捷盘等可移动设备
+  + locate \*.ps 寻找以 '.ps' 结尾的文件 - 先运行 'updatedb' 命令
+  + whereis halt 显示一个二进制文件、源码或man的位置
+  + which halt 显示一个二进制文件或可执行文件的完整路径
++ 查看文件内容
+  + cat file1 从第一个字节开始正向查看文件的内容
+  + tac file1 从最后一行开始反向查看一个文件的内容
+  + more file1 查看一个长文件的内容
+  + less file1 类似于 'more' 命令，但是它允许在文件中和正向操作一样的反向操作
+  + head -2 file1 查看一个文件的前两行
+  + tail -2 file1 查看一个文件的最后两行
+  + tail -f /var/log/messages 实时查看被添加到一个文件中的内容
+#### 磁盘空间
++ 磁盘空间操作
+  + df -h 显示已经挂载的分区列表
+  + du -sh dir1 估算目录 'dir1' 已经使用的磁盘空间'
