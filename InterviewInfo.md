@@ -374,13 +374,21 @@ List list = Collections.synchronizedList(new LinkedList(...))
 	+ 底层是数组,其查询效率也非常高
 + ***LinkedHashSet***: 具有可预知迭代顺序的Set接口的哈希表和链表实现
 + ***HashMap***:
-	+ 是一个散列表,它存储的内容是键值对映射(Key-Value);
-	+ 该类实现了Map接口,根据键的HashCode值存储数据,具有很快的访问速度,最多允许一个记录的键为null
-	+ 轻量级,线程不安全,不支持多线程.HashMap则是异步的，因此HashMap中的对象并不是线程安全的;
-	+ 同步的要求会影响执行的效率，所以如果你不需要线程安全的结合那么使用HashMap是一个很好的选择，这样可以避免由于同步带来的不必要的性能开销，从而提高效率，我们一般所编写的程序都是异步的
+	+ 底层数组+链表实现是一个散列表,它存储的内容是键值对映射(Key-Value);
+	+ 轻量级,线程不安全,不支持多线程.
+	+ 初始size为16，扩容：newsize = oldsize*2，size一定为2的n次幂
+  + 扩容针对整个Map，每次扩容时，原来数组中的元素依次重新计算存放位置，并重新插入
+  + 当Map中元素总数超过Entry数组的75%(装载因子)，触发扩容操作，为了减少链表长度，元素分配更均匀
+  + 可以存储null键和null值
 + ***Hashtable***:
-	+ 重量级,线程安全,Hashtable是同步的，这个类中的一些方法保证了Hashtable中的对象是线程安全的
+	+ 底层数组+链表实现,重量级,线程安全,Hashtable是同步的，这个类中的一些方法保证了Hashtable中的对象是线程安全的
+  + 初始size为11，扩容：newsize = olesize*2+1
 	+ Hashtable是不能放入空值（null）的
++ **ConcurrentHashMap**;
+  + 底层数组+链表实现,线程安全
+  + 使用了锁分段技术来保证线程安全的: 首先将数据分成一段一段的存储，然后给每一段数据配一把锁，当一个线程占用锁访问其中一个段数据的时候，其他段的数据也能被其他线程访问。
+  + ConcurrentHashMap提供了与Hashtable和SynchronizedMap不同的锁机制。Hashtable中采用的锁机制是一次锁住整个hash表，从而在同一时刻只能由一个线程对其进行操作；而ConcurrentHashMap中则是一次锁住一个桶。
+  + ConcurrentHashMap默认将hash表分为16个桶，诸如get、put、remove等常用操作只锁住当前需要用到的桶。这样，原来只能一个线程进入，现在却能同时有16个写线程执行，并发性能的提升是显而易见的。
 
 + ***Stack***: 栈是Vector的一个子类,它实现了一个标准的先进后出的栈
 #### 如何使用迭代器(Iterator)
@@ -1459,6 +1467,17 @@ public class NewComputer {
   + 客户端携带要注销的token访问一个注销接口,服务端把token加入黑名单.
   + 此策略是否会出现黑名单过大的问题?
     + 不会,因为黑名单只需要维护本身没有过期但是又要使其无效的token,过期的token就可以不用存在黑名单了.
+## 对称加密和非对称加密
++ 在加密算法之外,面临一个问题,就是秘钥的分发.就是说,解密方如何获得加密放的秘钥呢?从而出现了对称加密和非对称加密.
++ **对称加密**
+  + 加密和解密都使用同一个秘钥,所以叫对称加密.对称加密只有一个秘钥,作为私钥
+  + 常见的对称加密算法: DES,AES等
++ **非对称加密**
+  + 加密和解密使用不同的秘钥,一把作为公开的公钥,另外一把作为私钥.公钥加密的信息,只有私钥才能解密.私钥加密的信息,只有公钥才能解密.
+  + 常见的非对称加密:RSA,ECC
++ 两者区别
+  + 对称加密算法相比非对称加密算法来说，加解密的效率要高得多。但是缺陷在于对于秘钥的管理上，以及在非安全信道中通讯时，密钥交换的安全性不能保障。所以在实际的网络环境中，会将两者混合使用.
+
 
 ## Mybatis相关面试题
 #### 什么是Mybatis?
@@ -1494,14 +1513,15 @@ public class NewComputer {
   + 由以下几个模块组成:
     + Spring Core: 核心类库,提供IOC服务.
     + Spring Context: 提供框架式的Bean访问方式,以及企业级功能
-    + Spring AOP: AOP服务.
+    + Spring AOP: AOP服务,面向切面编程可以将应用业务逻辑和系统服务分离.
     + Spring DAO: 对JDBC的抽象,简化了数据访问异常的处理.
     + Spring ORM: 对现有的ORM框架的支持.
     + Spring Web: 提供了基本的面向Web的综合特性,例如多方文件上传
     + Spring MVC: 提供面向Web应用的Model-View-Controller实现
 + **Spring的优点?**
   + 1.降低了组件之间的耦合性,实现了软件各层之间的解耦.
-  + 2.容器
+  + 2.spring的DI机制将对象之间的依赖关系交由框架处理,降低组件的耦合性
+  + 3.spring提供了AOP技术,支持将一些通用的任务,比如日志,权限,事务等进行集中管理,从而更好的复用.
 + **你对Spring AOP的理解?**
   + OOP面向对象,允许开发者顶定义纵向关系,但并不适用与定义横向关系,导致大量代码的重复,而不利于各个模块的重用.面向对象编程将程序分解为各个层次的对象.OOP中引入封装,继承和多态等概念来建立一种对象层次结构,用以模拟公共行为的一个集合.
   + 当我们需要为分散的对象引入公共行为时,OOP就显得无能为力.也就是说,OOP允许你定义从上到下的关系,但并不适合定义从左到右的关系.例如日志管理.日志代码往往水平地散布在所有对象层中,而与它锁散布到的对象的核心功能毫无关系.对于其他类型的代码,入安全性,异常处理也是如此.这种在各处的无关的代码被称为横切代码,在OOP设计中,它导致了大量代码的重复,而不利于各个模块的重用.
@@ -1511,6 +1531,10 @@ public class NewComputer {
     + IOC即控制反转,不是什么技术,而是一种设计思想.在java中,IOC意味着将设计好的对象交给容器控制,而不是传统的在对象内部进行控制.它是一种面向对象编程的法则,它能指导我们如何设计出松耦合,更优良的程序.
     + 传统的应用程序都是由我们在类内部主动创建依赖对象,从而导致类与类之间高耦合,难于测试.有了IOC后,把创建和查找依赖对象的控制权交给了容器,有容器内部进行注入组合对象.
     + 其实IOC对编程带来的最大改变不是从代码上的,而是从编程思想上,发生了"主从换位"的变化.应用程序原本是最高主体,需要什么资源都是主动出击,但是在IOC/DI思想中,应用程序就变成被动的了,被动地的等待IOC容器来创建并注入它所需要的资源.
+    + Spring的IOC有三种注入方式: 构造器注入,setter方法注入,根据注解注入.
+    + 区别构造器注入和setter注入?
+      + 构造器注入任意修改都会创建一个新实例,但setter注入任意修改不会创建一个新实例
+      + 构造器注入适用于设置很多属性,但setter注入适用于设置少量属性.
   + DI
     + 即依赖注入,组件之间依赖关系由容器在运行时期决定,即由容器动态地将某个依赖关系注入到组件中.
   + IOC与DI的关系
@@ -1521,4 +1545,32 @@ public class NewComputer {
     + 所以控制反转Ioc是说创建对象的控制权进行转移,以前创建对象的主动权和创建时间是由自己把握的,而现在在这种权利转移到第三方,比如交移给了IOC容器,它就是来专门创建对象的工厂,你要什么对象,它就给你什么对象,优良IOC容器,依赖关系就变了,原先的依赖关系就没了,它们都依赖IOC容器了,通过IOC容器来建立它们的关系.
 
 + **Spring Bean是什么?有什么作用?**
-  +
+  + Spring Bean是构成程序主干并由Spring IOC容器控制的对象. 或者说成,bean是一个由Spring IOC容器实例化,组装和管理的对象.
+    + 1.bean是对象,一个或者多个不定.
+    + 2.bean是由Spring中IOC容器控制
+    + 3.应用程序由bean构成
+
++ **Spring中有多少种IOC容器?**
+  + BeanFactory: 就像一个包含bean集合的工厂类,它会在客户端要求时实例化bean.
+    + 是Spring里面最底层的接口,包含各种Bean的定义,读取Bean配置文档,管理Bean的加载和实例化,控制Bean的生命周期,维护Bean之间的依赖关系.
+  + ApplicationContext: 扩展了BeanFactory,在此基础上增加一些功能.
++ **Spring中常用的注解?**
+  + @Component 创建类对象,相当于配置.最普通的组件,可以被注入到Spring容器进行管理.
+  + @Service与@Component功能相同: 在业务层使用(Service层)
+  + @Repository与@Component功能相同: 在数据访问层使用(Dao层)
+  + @Controller与@Component功能相同: 在控制器层使用
+  + @Autowired: 用来装配Bean,可以写在字段上,也可以写在方法上.
+  + @Resource: @Resource的作用相当于@Autowired,只不过@Autowired按byType自动注入,而@Resource默认按 byName自动注入罢了。
+    + @Resource有两个属性是比较重要的，分是name和type，Spring将@Resource注解的name属性解析为bean的名字，而type属性则解析为bean的类型。所以如果使用name属性，则使用byName的自动注入策略，而使用type属性时则使用byType自动注入策略。如果既不指定name也不指定type属性，这时将通过反射机制使用byName自动注入策略。
+  + @RestController: 原来在@Controller中返回json需要@ResponseBody来配合,使用@RestController替代@Controller就不需要配置@ResponseBody,默认返回Json格式.
+  + @RequestMapping: 提供初步的请求映射信息,相当于Web应用的根目录
+  + @RequestParam: 用来将请求的参数区域映射到功能处理方法参数上.
+  + @RequestBody 注解实现接收 http 请求的 json 数据，将 json 数据转换为 java 对象。
+  + @ResponseBody 注解实现将 controller 方法返回对象转化为 json 响应给客户。
++ **Spring MVC的工作原理?**
+  + 1.用户向服务器发送请求,请求被SpringMVC前端控制器DispatchServlet捕获
+  + 2.DispatchServlet对请求URL进行解析,得到请求资源标示符URL,然后根据该URL调用HandlerMapping将请求映射到处理器HandlerExcutionChain;
+  + 3.DispatchServlet根据获得的Handler选择一个合适的HandlerAdapter适配器处理
+  + 4.Handler对数据处理完成以后将返回一个ModelAndView()对象给DispatchServlet
+  + 5.DispatchServlet通过视图解析器将逻辑视图转化为真正的视图
+  + 6.DispatchServlet通过model解析出ModelAndView()中的参数进行解析最终展现出完整的view并返回给客户端
