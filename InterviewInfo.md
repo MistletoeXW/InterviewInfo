@@ -522,6 +522,206 @@ public class GenericTest {
 
 ```
 
+## Object类中有哪些方法?
+##### getClass()方法
++ 获取运行时类型,返回值为class对象
+##### hashCode()方法
++ 返回对象的哈希码值.是为了提高hash性能
+##### equals()方法
++ 判断两个对象是否相等,在Object源码中equals就是使用双等号去判断的,所以Object中的equals是等价于双等号的,但是在String及某些类中对equals进行了重写,实现不同的比较.
+##### clone()方法
++ 此方法只实现了一个浅层拷贝,对于基本类型字段成功拷贝,但是如果是嵌套对象,只做了赋值,也就是只把地址拷贝了,所以没有成功拷贝,需要自己重写clone方法进行深度拷贝。
+##### toString()方法
++ 返回一个String字符串,用于描述当前对象的信息,可以重写返回对自己有用的信息,默认返回的是当前对象的类名+hashCode的16进制数字.
+##### wait()方法
++ 多线程时用到的方法,作用是让当前线程进入等待状态,同时也会让当前线程十方它所持有的锁.直到其他线程调用此对象的notify()方法或者notifyAll()方法,当前线程被唤醒.
+##### notify()方法
++ 多线程时用到的方法,唤醒该对象等待的某个线程
+##### notifyAll()方法
++ 多线程时用到的方法,唤醒该对象等待的所有线程
+
+## Java中的包装类型
+##### Integer
++ 基本类型都有相应的包装类型,基本类型与其对应的包装类型之间的赋值使用自动装箱和拆箱完成
+  + Interger x=2; //装箱 调用了Integer.valueof(2)
+  + int y=x;      //拆箱 调用了x.intvalue
++ **new Integer(123) 与 Integer.valueOf(123) 的区别在于：**
+  + new Integer(123)每次都会新建一个对象
+  + Integer.valueof(123)会使用缓存池中的对象,多次调用会取得同一个对象的引用
+```java
+Integer x = new Integer(123);
+Integer y = new Integer(123);
+System.out.println(x == y);    // false
+Integer z = Integer.valueOf(123);
+Integer k = Integer.valueOf(123);
+System.out.println(z == k);   // true
+```
++ valueof()方法比较简单,就是先判断值是否在缓存池中,如果在的话就直接返回缓存池中的内容.在java8中,Integer缓存池的大小默认为-128~127.编译器会在自动装箱过程调用 valueOf() 方法，因此多个值相同且值在缓存池范围内的 Integer 实例使用自动装箱来创建，那么就会引用相同的对象
+```java
+Integer m = 123;
+Integer n = 123;
+System.out.println(m == n); // true
+```
+##### String
++ String被声明为final,因此它不可被继承(Integer等包装类也不能被继承),并且 String 内部没有改变 value 数组的方法，因此可以保证 String 不可变.
+  + 不可变的好处:
+    + 1.可以缓存hash值: 因为String的hash值经常被使用,例如String用做HashMap的key.不可变的特性可以使得hash值也不可变,因此只需要一次计算.
+    + 2.String Pool的需要: 如果一个String对象已经被创建,那么就会从String Pool中取得引用.只有String是不可变的,才可能使用StringPool.
+    + 3.安全性: String经常作为参数,String不可变性可以保证参数不可变
+    + 4.线程安全: String不可变性天生具备线程安全,可以在多个线程中安全的使用
++ String Pool
+  + 字符串常量池(String Pool)中保存着所有字符串字面量,这些字面量在编译时期就确定.不仅如此,还可以使用String的intern()方法在运行规程中将字符串添加到String Pool中.
+  + 当一个字符串调用 intern() 方法时，如果 String Pool 中已经存在一个字符串和该字符串值相等（使用 equals() 方法进行确定），那么就会返回 String Pool 中字符串的引用；否则，就会在 String Pool 中添加一个新的字符串，并返回这个新字符串的引用。
+  ```java
+  //s1 和 s2 采用 new String() 的方式新建了两个不同字符串对象
+  String s1 = new String("aaa");
+  String s2 = new String("aaa");
+  System.out.println(s1 == s2);           // false
+  //s3 和 s4 是通过 s1.intern() 方法取得同一个字符串引用
+  //intern() 首先把 s1 引用的字符串放到 String Pool 中，然后返回这个字符串引用
+  String s3 = s1.intern();
+  String s4 = s1.intern();
+  System.out.println(s3 == s4);           // true
+  ```
+  + str1 = new String("abc")
+    + 如果是采用这一种方式会创建新的对象,"abc" 属于字符串字面量，因此编译时期会在 String Pool 中创建一个字符串对象，指向这个 "abc" 字符串字面量.
+    + 而使用 new 的方式会在堆中创建一个字符串对象
+    + 所以str1的内存地址在栈中，指向堆中“abc”
+  + 如果是采用str2="abc"这种方式进行创建字符串,会自动将字符串放入到String Pool中(自动装箱)
+    + str2的内存地址指向字符串常量池
+  ```java
+  String s5 = "bbb";
+  String s6 = "bbb";
+  System.out.println(s5 == s6);  // true
+  ```
+
+  + 两种创建方式str1 = new String("abc")和str2="abc"的区别
+    + str1的内存地址指向字符串常量池是没错，str2的内存地址在栈中，指向堆中“abc”，然后堆中“abc”又引用了常量池中“abc”。但是str1和str2的内存地址确实不同。
+## Java中的值传递和引用传递
++ 基本类型: 值存放在局部变量表中,无论如何修改啊只会修改当前栈帧的值,方法执行结束对方法外不会做任何改变
++ 引用数据类型: 指针存放在局部变量表中,调用方法时,副本引用压栈,赋值仅改变副本的引用.
++ **1.方法参数为基本类型的值传递**
+```java
+public class MethodParamsPassValue {
+
+    public static void passBaseValue(boolean flg, int num) {
+        flg = true;
+        num = 10;
+    }
+
+    public static void main(String[] args) {
+        boolean a = false;
+        int b = 5;
+        System.out.println("a : " + a + " b : " + b);
+        passBaseValue(a, b);
+        System.out.println("a : " + a + " b : " + b);
+    }
+}
+
+返回值结果:
+a : false b : 5
+a : false b : 5
+
+1. 方法参数flg被初始化为外部变量a的拷贝，值为false。参数num被初始化为外部变量b的拷贝，值为5。
+2. 执行方法逻辑，方法中的局部变量flg被改变为true，局部变量flg被改变为10。
+3.方法执行完毕，不再局部变量不再被使用到，等待被GC回收。
+
+```
++ **2.方法参数为包装类型的引用传递**
+```java
+public class MethodParamsPassValue {
+
+    public static void passReferenceValue(Boolean flg, Integer num) {
+        flg = true;
+        num = 10;
+    }
+
+    public static void main(String[] args) {
+        Boolean a = false;
+        Integer b = 5;
+        System.out.println("a : " + a + " b : " + b);
+        passReferenceValue(a, b);
+        System.out.println("a : " + a + " b : " + b);
+    }
+}
+返回结果:
+a : false b : 5
+a : false b : 5
+
+```
+  + 为什么传入的引用类型,结果却没改变呢?
+    + 这是因为Java中的自动装箱机制，当在方法中执行 flg = true 时，实际在编译后执行的是
+flg = Boolean.valueOf(true)，即又会产生一个新的Boolean对象。同理Integer num也是如此。
++ **3.方法参数为类的对象引用时**
+```java
+public class MethodParamsPassValue {
+
+    public static void passObjectValue(ParamObject paramObject) {
+        paramObject.setFlg(true);
+        paramObject.setNum(10);
+    }
+
+    public static void main(String[] args) {
+        ParamObject a = new ParamObject(false, 5);
+        System.out.println(a);
+        passObjectValue(a);
+        System.out.println(a);
+    }
+}　　
+
+返回结果:
+ParamObject{flg=false, num=5}
+ParamObject{flg=true, num=10}
+
+```
+  + 对于引用类型的参数,会将外部变量的引用地址,复制一份到方法的局部变量中,两个地址指向同一个对象.所以如果通过操作副本引用的值,修改了引用地址的对象,此时方法外的引用此地址对象也会被修改.
+
+## Java中的equal和'=='
+##### ’=='运算符
++ 当比较的常量为基本类型,且都是数值类型,且'=='比较的是其数值
++ 当比较的是引用类型,只有当题目都指向同一个对象的时候才会返回true
++ 其不可以用去在类型上比较没有继承关系的两个变量
+##### equal方法
++ 该方法属于Object类,因此所有引用变量都可以用这个方法来判断是否与其他引用变量相等
++ 包装类比如String就重写了equal()方法,该方法可以判断两个字符串所引用的字符串的值是否相等.
+
+
+## Java中的深浅拷贝
++ 首先提出一个问题: 在java中经常需要拷贝一个对象,但是直接用=就可以直接复制对象吗?
+  ```java
+  Person p = new Person(23, "zhang");
+  Person p1 = p;
+
+  System.out.println(p);
+  System.out.println(p1);
+
+  返回结果:
+  com.pansoft.zhangjg.testclone.Person@2f9ee1ac
+  com.pansoft.zhangjg.testclone.Person@2f9ee1ac
+  ```
+  + 可已看出，打印的地址值是相同的，既然地址都是相同的，那么肯定是同一个对象。p和p1只是引用而已，他们都指向了一个相同的对象Person(23, "zhang") 。 可以把这种现象叫做引用的复制。上面代码执行完成之后， 内存中的情景如下图所示：
+  ![拷贝1](picture/拷贝1.png)
+
++ 可以对上述代码进行改造运用clone()拷贝方法,达到复制对象的结果:
+  ```java
+  Person p = new Person(23, "zhang");
+  Person p1 = (Person) p.clone();
+
+  System.out.println(p);
+  System.out.println(p1);
+  返回结果:
+  com.pansoft.zhangjg.testclone.Person@2f9ee1ac
+  com.pansoft.zhangjg.testclone.Person@67f1fba0
+  ```
+  + 从打印结果来看,两个对象的地址不同,也就是说达到了创建新的拷贝对象,而不是把原对象的地址赋给了新的引用变量.
++ **那么什么是深拷贝和浅拷贝呢?**
+  + 加入一个对象中变量存在以下两种情况:
+    + 对于基本数据类型: 拷贝时直接将数值进拷贝
+    + 但对于String这种包装类,它只是一个引用,指向一个真正的String对象,那么对它的拷贝就有两种选择:
+      + 浅拷贝: 直接将源对象中的包装类引用值拷贝给新的对象
+      + 深拷贝: 将包装类指向的字符串对象创建一个新的相同的字符串对象,将这个字符串对象的引用赋值给新拷贝的对象
+      ![](picture/拷贝2.png)
+
 ## 常见的设计模式及Java实现
 ### 设计原则
 + **单一责任原则**: 一个类只负责一件事情,当这个类要做过多的事情过后,就需要分解这个类
@@ -1568,12 +1768,54 @@ public class NewComputer {
   + @RequestBody 注解实现接收 http 请求的 json 数据，将 json 数据转换为 java 对象。
   + @ResponseBody 注解实现将 controller 方法返回对象转化为 json 响应给客户。
 + **Spring MVC的工作原理?**
-  + 1.用户向服务器发送请求,请求被SpringMVC前端控制器DispatchServlet捕获
-  + 2.DispatchServlet对请求URL进行解析,得到请求资源标示符URL,然后根据该URL调用HandlerMapping将请求映射到处理器HandlerExcutionChain;
-  + 3.DispatchServlet根据获得的Handler选择一个合适的HandlerAdapter适配器处理
-  + 4.Handler对数据处理完成以后将返回一个ModelAndView()对象给DispatchServlet
-  + 5.DispatchServlet通过视图解析器将逻辑视图转化为真正的视图
-  + 6.DispatchServlet通过model解析出ModelAndView()中的参数进行解析最终展现出完整的view并返回给客户端
+  + Spring MVC提供了一种分离式的方法来开发Web应用,通过运用DispatcherServelet,MoudlAndView 和 ViewResolver 等一些简单的概念，开发 Web 应用将会变的非常简单。
+    + 1.用户向服务器发送请求,请求被SpringMVC前端控制器DispatchServlet捕获
+    + 2.DispatchServlet对请求URL进行解析,得到请求资源标示符URL,然后根据该URL调用HandlerMapping将请求映射到处理器HandlerExcutionChain;
+    + 3.DispatchServlet根据获得的Handler选择一个合适的HandlerAdapter适配器处理
+    + 4.Handler对数据处理完成以后将返回一个ModelAndView()对象给DispatchServlet
+    + 5.DispatchServlet通过视图解析器将逻辑视图转化为真正的视图
+    + 6.DispatchServlet通过model解析出ModelAndView()中的参数进行解析最终展现出完整的view并返回给客户端
+## Spring Boot相关的面试题
+##### 什么是Spring Boot? 为什么要用Spring Boot?
++ Spring Boot是Spirng开源组织下的子项目,是Spirng组件一站式解决方案,主要简化了使用Spring先关的配置,提供了各种启动器.
+##### SpringBoot的核心配置文件是什么?他有哪些格式?
++ Spring Boot使用了一个全局的配置文件application.propertis,放在src/main/resources目录下.Spring Boot的全局配置文件的作用是对一些默认配置的配置值进行修改.用于Spirng Boot的自动化配置.
++ 文件格式有.properties 和 .yml，它们的区别主要是书写格式不同。
+##### Spring Boot的核心注解是哪个?它主要由哪几个注解组成?
++ 启动类上面的注解是@SpringBootApplication以及run方法,它也是Spring Boot的核心注解,主要组合包含了以下3个注解:
+  + @SpringBootConfiguration：内部组合了@Configuration 注解，将这个来变成一个配置类,不需要额外的XML进行配置。
+  + @EnableAutoConfiguration：打开自动配置的功能，该注解会使Spring Boot根据项目中依赖的jar包自动配置项目的配置项
+  + @ComponentScan：Spring组件扫描,放入到Spring容器
+##### SpringBoot中的数据源有哪些?请描述其中主要的两个?
++ **1. Spring Boot默认支持4种数据源类型**
+  + org.apache.tomcat.jdbc.pool.DataSource
+  + com.zaxxer.hikari.HikariDataSource
+  + org.apache.commons.dbcp.BasicDataSource
+  + org.apache.commons.dbcp2.BasicDataSource
+  + 对于这4种数据源,Spring Boot会通过自动配置生成DataSource Bean,4种数据源类型生效先后顺序为:Tomcat > Hikari > Dbcp > Dbcp2
+  + 在Spring Boot使用JDBC可直接添加官方提供的spring-boot-start-jdbc或者spring-boot-start-data-jpa 依赖.当我们使用spring-boot-start-jdbc依赖时,其实里面就包含了 Tomcat-JDBC 的依赖,如果想要切换为其他数据源资源类型,需要将Tomcat-JDBC 依赖排除,再添加上需要的数据源的依赖.
++ **2.第三方数据源**
+  + 如果不想使用Springboot默认支持的4种数据源，还可以选择使用其他第三方的数据源，例如：Druid、c3p0等
+  + 直接在pom文件中引入第三方数据源依赖.
+
+##### Spring Boot支持哪些日志框架?
++ Spring Boot支持Java Util Logging,Log4j2,Lockback作为日志框架,如果你使用 Starters 启动器，Spring Boot 将使用 Logback 作为默认日志框架.spring-boot-starter启动器包含spring-boot-starter-logging启动器并集成了slf4j日志抽象及Logback日志框架。
+
+##### 你如何理解Spring Boot中的Starters(启动器)?
++ Starters可以理解为启动器,它包含了一系列可以集成到应用里面的依赖包,你可以一站式集成Spring及其他技术,而不需要到处找示例代码和依赖包.如果你想要使用Spring JPA访问数据库,只需要加入spring-boot-start-data-jpa启动器依赖就能使用
++ Starters包含了许多项目中需要用到的依赖，它们能快速持续的运行，都是一系列得到支持的管理传递性依赖。
++ Spring Boot官方的启动器都是以spring-boot-starter-命名的，代表了一个特定的应用类型
++ **启动器分类**
+  + 1. Spring Boot应用类启动器
+    + spring-boot-starter: 包含自动配置,日志支持等.
+    + spring-boot-starter-web: 使用Spring MVC构建web 工程，包含restful，默认使用Tomcat容器。
+  + 2. Spring Boot技术类启动器
+    + spring-boot-starter-json: 提供对JSON的读写支持
+    + spring-boot-starter-logging: 默认的日志启动器，默认使用Logback
+
+
+
+
 
 ## Java多线程相关的面试题
 + **什么是线程?线程和进程的区别?如何在java中实现一个线程?**
@@ -1664,4 +1906,15 @@ public class NewComputer {
       + 将更改后的共享变量
       + 释放互斥锁
   + **volatile如何实现内存可见性**
-    + 
+    +
+
+
+
+
+## JVM内存结构和JAVA内存结构和JAVA对象模型
+#### JVM内存结构
++ 我们都知道，Java代码是要运行在虚拟机上的，而虚拟机在执行Java程序的过程中会把所管理的内存划分为若干个不同的数据区域，这些区域都有各自的用途。![jvm](picture/JVM.jpeg)
++ JVM内存结构，由Java虚拟机规范定义。描述的是Java程序执行过程中，由JVM管理的不同数据区域。
+
+#### JMM(java内存模型)
++ 在上面JVM的内存结构中,我们可以看到,其中java堆和方法区的区域是多个线程共享的数据区域.也就是说,多个线程可能可以操作保存在堆或者方法区中的同一个数据.这就是我们常说的"Java的线程间通过共享内存进行通信"
