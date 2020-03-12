@@ -318,6 +318,10 @@ public interface Hockey extends Sports, Event
 +  StringBuilder 类和 StringBuffer 之间的最大不同在于 StringBuilder 的方法不是线程安全的（不能同步访问）
 +  由于 StringBuilder 相较于 StringBuffer 有速度优势，所以多数情况下建议使用 StringBuilder 类。然而在应用程序要求线程安全的情况下，则必须使用 StringBuffer 类
 
+### 使用+号连接字符串与使用StringBuilder连接字符串有什么区别?
++ java进行字符串连接，用+进行连接，其实内部也是通过StringBuilder的append来实现的；如果是循环拼接，那么系统会在循环体内部创建StringBuilder,这样会造成空间浪费
++ 而用StringBuilder进行显示拼接时，可以定义在外面，减少StringBuilder对象创建的次数带来的内存的消耗
+
 ### Java集合框架
   Java 集合框架主要包括两种类型的容器，一种是集合（Collection），存储一个元素集合，另一种是图（Map），存储键/值对映射。Collection 接口又有 3 种子类型，List、Set 和 Queue，再下面是一些抽象类，最后是具体实现类，常用的有 ArrayList、LinkedList、HashSet、LinkedHashSet、HashMap、LinkedHashMap 等等
 + 接口：是代表集合的抽象数据类型。例如：Collocation、List、Set、Map等。之所以定义多个
@@ -423,6 +427,47 @@ while(ite.hasNext())//判断下一个元素之后有值
   + https://www.jianshu.com/p/75adf47958a7
   + http://www.zhangchangle.com/2018/02/07/Java%E9%9B%86%E5%90%88%E4%B9%8BHashMap/
 
+### Map的遍历方式
++ 方法一: 在for循环中使用Entry实现Map的遍历
+```java
+Map<String,String> map = new HashMap<String,String>();
+for(Map.Entry<String,String> entry : map.entrySet()){
+    String mapKey = entry.getKey();
+    String mapValue = entry.getValue();
+    System.out.println(mapKey+":"+mapValue);
+}
+
+```
+
++ 方法二: 在for循环中遍历key或者values，一般适用于只需要map中的key或者value时使用，在性能上比使用entrySet较好；
+```java
+//key
+for(String key : map.keySet()){
+    System.out.println(key);
+}
+//value
+for(String value : map.values()){
+    System.out.println(value);
+}
+```
+
++ 方法三: 通过Iterator遍历
+```java
+Iterator<Entry<String, String>> entries = map.entrySet().iterator();
+while(entries.hasNext()){
+    Entry<String, String> entry = entries.next();
+    String key = entry.getKey();
+    String value = entry.getValue();
+    System.out.println(key+":"+value);
+}
+```
++ 方法四: 通过键值遍历，这种方式的效率比较低，因为本身从键取值是耗时的操作
+```java
+for(String key : map.keySet()){
+    String value = map.get(key);
+    System.out.println(key+":"+value);
+}
+```
 
 ### Java泛型
 	  假定我们有这样一个需求：写一个排序方法，能够对整型数组、字符串数组甚至其他任何类型的数组进行排序，该如何实现？答案是可以使用 Java 泛型。
