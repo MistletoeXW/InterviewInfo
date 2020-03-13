@@ -1,3 +1,13 @@
+# 计算机网络
+## 概述
+#### 五层协议
++ **应用层**: 为特定的应用程序提供数据传输服务,例如:HTTP,DNS等协议.数据单位为报文
++ **传输层**: 为进程提供通用的数据传输服务.由于应用层协议很多,定义通用的传输层协议就可以支持不断增多的应用层协议.传输层分为两种协议:
+  + TCP: 提供面向连接,可靠的数据传输服务,数据单位为报文段.主要提供完整性服务.
+  + UDP: 提供无连接,尽最大努力的数据传输服务,数据单位为用户数据报.主要提供及时性服务.
+
+
+
 # Java编程语言
 ## Java语言基础
 ### 继承
@@ -16,7 +26,7 @@
 + **extends**: 在 Java 中，类的继承是单一继承，也就是说，一个子类只能拥有一个父类，所以 extends 只能继承一个类
 ```java
 public class Animal {
-    private String name;
+    private String name;,
     private int id;
     public Animal(String myName, String myid) {
         //初始化属性值
@@ -179,6 +189,11 @@ class SubClass2 extends SuperClass{
   }
 }
 ```
+### Java实例化对象的几种方式
++ 用new语句创建对象,这是最常见的创建对象的方法: ExampleClass example = new ExampleClass ();
++ 用java内部的反射机制: Object example = Class.forName("完整的类路径").newInstance();
++ 利用实例的克隆方法: instance.clone()
+
 ### Java 重写(Override)与重载(Overload)
 ####  重写(Override)
 + 重写是子类对父类的允许访问的方法的实现过程进行重新编写，**返回值和形参都不能改变**(返回值只能相同或者是派生类)
