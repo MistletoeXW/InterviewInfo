@@ -2220,3 +2220,57 @@ public class NewComputer {
 + **3.启动容器**: docker container run -p 8080:8080 (镜像名)
   + 查看容器: docker container ls
   + 删除容器: docker container kill [容器号]
+
+## 同步互斥问题
+#### 生产者与消费者问题
++ 生产者的主要作用是生成一定量的数据放到缓冲区中，然后重复此过程。与此同时，消费者也在缓冲区消耗这些数据。该问题的关键就是要保证生产者不会在缓冲区满时加入数据，消费者也不会在缓冲区中空时消耗数据。
++ 需要注意几点:
+  + 在缓冲区为空时,消费者不能再消费
+  + 在缓冲区为满时,生产者不能再生产
+  + 在一个线程进行生产或者消费时,其余线程不能再生产或者消费等操作
++ 伪代码实现
+```java
+//假设缓存区的大小为10,生产者和消费者若干.
+int used = 0;//表示缓存区已经使用的资源数
+int spacae = 10;//表示可以使用的资源数
+int mutex = 1;//表示互斥锁
+int[] buf[10]; //表示缓冲区
+
+class producer{
+  while(true){
+    wait(space);//等待缓冲区有空闲位置
+    wait(mutex); //上锁,保证生产者在生产时不会有其他线程访问缓冲区
+
+    //生产者进行生产,并将数据放入缓冲区
+    ...
+
+    signal(mutex);
+    signal(used);// 通知consumer缓冲区有资源可以取走
+  }
+
+}
+
+class consumer {
+    while( true ) {
+        wait( used );  // 等待缓冲区有资源可以使用
+        wait( mutex );  // 保证在consume时不会有其他线程访问缓冲区
+
+        // 消费者取数据并消费
+        ....
+
+        signal( mutex );  // 唤醒的顺序可以不同
+        signal( space );  // 通知缓冲区有空闲位置
+    }
+}
+
+```
+#### 哲学家就餐问题
+```java
+    mutex=1
+    P(mutex)
+    get the right chopsticks
+    get the left chopsticks
+    eating
+    P(mutex)
+
+```
